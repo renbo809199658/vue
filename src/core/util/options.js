@@ -219,7 +219,7 @@ const defaultStrat = function (parentVal: any, childVal: any): any {
 }
 
 /**
- * Validate component names
+ * 验证组件option名称
  */
 function checkComponents (options: Object) {
   for (const key in options.components) {
@@ -294,8 +294,8 @@ function normalizeDirectives (options: Object) {
 }
 
 /**
- * Merge two option objects into a new one.
- * Core utility used in both instantiation and inheritance.
+ * 将两个对象的option合并为一个
+ *在初始化和继承的时候使用
  */
 export function mergeOptions (
   parent: Object,

@@ -2,24 +2,29 @@
 
 // these helpers produces better vm code in JS engines due to their
 // explicitness and function inlining
+
+//判断是否为undefined或者null
 export function isUndef (v: any): boolean %checks {
   return v === undefined || v === null
 }
 
+//判定是否不为undefined或者null
 export function isDef (v: any): boolean %checks {
   return v !== undefined && v !== null
 }
 
+//判定是否为真
 export function isTrue (v: any): boolean %checks {
   return v === true
 }
 
+//判定是否为false
 export function isFalse (v: any): boolean %checks {
   return v === false
 }
 
 /**
- * Check if value is primitive
+ * 是否为原始类型 (string number boolean)
  */
 export function isPrimitive (value: any): boolean %checks {
   return (
@@ -33,7 +38,8 @@ export function isPrimitive (value: any): boolean %checks {
  * Quick object check - this is primarily used to tell
  * Objects from primitive values when we know the value
  * is a JSON-compliant type.
- */
+ *判定是否为对象类型 (json也可以)
+ */ 
 export function isObject (obj: mixed): boolean %checks {
   return obj !== null && typeof obj === 'object'
 }
@@ -43,17 +49,20 @@ const _toString = Object.prototype.toString
 /**
  * Strict object type check. Only returns true
  * for plain JavaScript objects.
+ * 严格对象判断 (只能是Object)
  */
 export function isPlainObject (obj: any): boolean {
   return _toString.call(obj) === '[object Object]'
 }
 
+//是否是正则对象
 export function isRegExp (v: any): boolean {
   return _toString.call(v) === '[object RegExp]'
 }
 
 /**
  * Check if val is a valid array index.
+ * 数组越界检查
  */
 export function isValidArrayIndex (val: any): boolean {
   const n = parseFloat(val)
@@ -62,6 +71,7 @@ export function isValidArrayIndex (val: any): boolean {
 
 /**
  * Convert a value to a string that is actually rendered.
+ * 对象转字符串
  */
 export function toString (val: any): string {
   return val == null
@@ -74,6 +84,7 @@ export function toString (val: any): string {
 /**
  * Convert a input value to a number for persistence.
  * If the conversion fails, return original string.
+ * 对象转number类型 如果失败则传回原值
  */
 export function toNumber (val: string): number | string {
   const n = parseFloat(val)
@@ -83,6 +94,7 @@ export function toNumber (val: string): number | string {
 /**
  * Make a map and return a function for checking if a key
  * is in that map.
+ map中是否含该值
  */
 export function makeMap (
   str: string,
@@ -100,16 +112,19 @@ export function makeMap (
 
 /**
  * Check if a tag is a built-in tag.
+ 确认是否有slot component字符串(创建时的tag)
  */
 export const isBuiltInTag = makeMap('slot,component', true)
 
 /**
  * Check if a attribute is a reserved attribute.
+ *确认是否有key ref slot is字符串(额外的属性)
  */
 export const isReservedAttribute = makeMap('key,ref,slot,is')
 
 /**
  * Remove an item from an array
+ * 数组中移除一个item
  */
 export function remove (arr: Array<any>, item: any): Array<any> | void {
   if (arr.length) {
@@ -122,6 +137,7 @@ export function remove (arr: Array<any>, item: any): Array<any> | void {
 
 /**
  * Check whether the object has the property.
+ * 确认对象是否有某个属性
  */
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export function hasOwn (obj: Object | Array<*>, key: string): boolean {
@@ -130,6 +146,7 @@ export function hasOwn (obj: Object | Array<*>, key: string): boolean {
 
 /**
  * Create a cached version of a pure function.
+ * To Do
  */
 export function cached<F: Function> (fn: F): F {
   const cache = Object.create(null)

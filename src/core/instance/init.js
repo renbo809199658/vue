@@ -10,30 +10,39 @@ import { initLifecycle, callHook } from './lifecycle'
 import { initProvide, initInjections } from './inject'
 import { extend, mergeOptions, formatComponentName } from '../util/index'
 
-let uid = 0
+let uid = 0  //设置vue类的对应id
 
-export function initMixin (Vue: Class<Component>) {
-  Vue.prototype._init = function (options?: Object) {
+//mixin(混合)方式初始化 传入一个对象(Vue)父类为Component
+export function initMixin (Vue: Class<Component>) { //导出初始化方法
+  //为Vue添加_init方法  传入一个option对象
+  Vue.prototype._init = function (options?: Object) {   
+    //获得vue对象实例
     const vm: Component = this
     // a uid
     vm._uid = uid++
-
+    //开始标签 结束标签
     let startTag, endTag
-    /* istanbul ignore if */
+    //在生产环境下 如果设置了需要打印初始化事件的时间则执行
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+      //设置开始标志
       startTag = `vue-perf-init:${vm._uid}`
+      //设置结束标志
       endTag = `vue-perf-end:${vm._uid}`
+      //控制台打印开始标志  vue-perf-init: + _uid
       mark(startTag)
-    }
+    } 
 
-    // a flag to avoid this being observed
+    //为vue对象添加一个vue表示表明他是vue实例以此避免被监听
     vm._isVue = true
-    // merge options
+    //合并选项 如果在option中确定了实例有内部组件则需要对其做特别的优化
     if (options && options._isComponent) {
-      // optimize internal component instantiation
-      // since dynamic options merging is pretty slow, and none of the
-      // internal component options needs special treatment.
+        /* 
+        * 优化内部组件的初始化,因为动态选择合并效率非常低
+        *所以如果有需要这样做则要特别的优化
+        */
+        //需要特殊优化的情况 (手动初始化)
       initInternalComponent(vm, options)
+      //自动初始化
     } else {
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
@@ -70,10 +79,11 @@ export function initMixin (Vue: Class<Component>) {
     }
   }
 }
-
+//初始化内部组件 传入vue实例及option
 function initInternalComponent (vm: Component, options: InternalComponentOptions) {
+  //创建一个vue对象的option对象,并赋值给传入的vue实例,再引用给一个常量
   const opts = vm.$options = Object.create(vm.constructor.options)
-  // doing this because it's faster than dynamic enumeration.
+  //手动给vue实例添加初始化的option
   opts.parent = options.parent
   opts.propsData = options.propsData
   opts._parentVnode = options._parentVnode
